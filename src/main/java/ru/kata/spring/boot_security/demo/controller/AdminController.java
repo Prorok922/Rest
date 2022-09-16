@@ -34,7 +34,6 @@ public class AdminController {
         model.addAttribute("userList", userService.getAllUsers());
         model.addAttribute("newUser", new User());
         model.addAttribute("userAuth", userService.loadUserByUserEmail(principal.getName()));
-        System.out.println(userService.loadUserByUsername(principal.getName()).getUsername());
         return "admin";
     }
 

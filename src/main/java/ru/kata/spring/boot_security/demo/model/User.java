@@ -43,6 +43,7 @@ public class User implements UserDetails {
     @Transient
     private String passwordConfirm;
 
+//    @ManyToMany(fetch = FetchType.LAZY)
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
@@ -58,36 +59,6 @@ public class User implements UserDetails {
         this.password = password;
         this.passwordConfirm = passwordConfirm;
         this.roles = roles;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-
-    public UserDetails getUserDetails() {
-        return new org.springframework.security.core.userdetails.User(email, password, isEnabled(),
-                isAccountNonExpired(), isCredentialsNonExpired(), isAccountNonLocked(), roles);
     }
 
 
@@ -131,12 +102,10 @@ public class User implements UserDetails {
         this.email = email;
     }
 
-    @Override
     public String getPassword() {
         return password;
     }
 
-    @Override
     public String getUsername() {
         return email;
     }
@@ -155,5 +124,35 @@ public class User implements UserDetails {
 
     public String getRoleString() {
         return roles.stream().map(role -> role.getRole().replace("ROLE_", "")).collect(Collectors.joining(" "));
+    }
+
+//    public UserDetails getUserDetails() {
+//        return new org.springframework.security.core.userdetails.User(email, password, isEnabled(),
+//                isAccountNonExpired(), isCredentialsNonExpired(), isAccountNonLocked(), roles);
+//    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return getRoles();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

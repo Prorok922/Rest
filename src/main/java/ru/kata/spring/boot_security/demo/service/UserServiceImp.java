@@ -6,6 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import ru.kata.spring.boot_security.demo.dao.RoleRepository;
 import ru.kata.spring.boot_security.demo.dao.UserRepository;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
@@ -17,11 +18,13 @@ import java.util.Set;
 @Service
 public class UserServiceImp implements UserService {
     private final UserRepository userRepository;
+    private RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Lazy
-    public UserServiceImp(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImp(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -31,8 +34,23 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    public List<Role> getAllRoles() { return roleRepository.findAll(); }
+
+    @Override
     public User getUserById(long id) {
         return userRepository.findById(id);
+    }
+
+    @Override
+    public boolean saveUser(User user) {
+        User userFromDB = userRepository.findByEmail(user.getUsername());
+        if (userFromDB != null) {
+            return false;
+        }
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+        return true;
     }
 
     @Override
@@ -79,7 +97,7 @@ public class UserServiceImp implements UserService {
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
         }
-        return user.getUserDetails();
+        return user;
     }
 
     public User loadUserByUserEmail(String email) throws UsernameNotFoundException {
@@ -89,5 +107,9 @@ public class UserServiceImp implements UserService {
             throw new UsernameNotFoundException("User not found");
         }
         return user;
+    }
+
+    public void saveRole(Role role) {
+        roleRepository.save(role);
     }
 }

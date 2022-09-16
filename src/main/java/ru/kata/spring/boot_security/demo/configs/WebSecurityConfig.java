@@ -10,15 +10,16 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import ru.kata.spring.boot_security.demo.service.UserService;
 
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    private final UserDetailsService userDetailsService;
+    private UserService userService;
 
-    public WebSecurityConfig(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public WebSecurityConfig(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
@@ -49,7 +50,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
                 .deleteCookies("JSESSIONID")
-                .logoutSuccessUrl("/login");
+                .logoutSuccessUrl("/login")
+                //включение авторизации basic
+                .and().httpBasic();
     }
 
     @Bean
@@ -57,11 +60,32 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder(12);
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setPasswordEncoder(passwordEncoder());
-        provider.setUserDetailsService(userDetailsService);
-        auth.authenticationProvider(provider);
+
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userService);
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        return authenticationProvider;
     }
 }
+// example json
+//[{"id":1,"firstName":"USER","lastName":"USEROVICH","age":20,"email":"USER@MAIL.RU","password":"$2a$12$N20Ze5E0JC.gYgOcuMCOYOlvQQdubphk3hRTt.J82jc0ELeSTlV2u",
+//        "roles":[{"id":2,"role":"ROLE_USER","authority":"ROLE_USER"}],
+//        "enabled":true,
+//        "authorities":[{"id":2,"role":"ROLE_USER","authority":"ROLE_USER"}],
+//        "username":"USER@MAIL.RU",
+//        "accountNonLocked":true,
+//        "roleString":"USER",
+//        "credentialsNonExpired":true,
+//        "accountNonExpired":true},
+//
+//        {"id":2,"firstName":"ADMIN","lastName":"ADMINOVICH","age":20,"email":"ADMIN@MAIL.RU","password":"$2a$12$hRZaQPT0gA4GWwRdCSbIO.vauQzazDPKYLWkQAvtpMylcDze6eG1e",
+//        "roles":[{"id":1,"role":"ROLE_ADMIN","authority":"ROLE_ADMIN"},{"id":2,"role":"ROLE_USER","authority":"ROLE_USER"}],
+//        "enabled":true,
+//        "authorities":[{"id":1,"role":"ROLE_ADMIN","authority":"ROLE_ADMIN"},{"id":2,"role":"ROLE_USER","authority":"ROLE_USER"}],
+//        "username":"ADMIN@MAIL.RU",
+//        "accountNonLocked":true,
+//        "roleString":"ADMIN USER",
+//        "credentialsNonExpired":true,
+//        "accountNonExpired":true}]

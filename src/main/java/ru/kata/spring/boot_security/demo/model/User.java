@@ -43,7 +43,6 @@ public class User implements UserDetails {
     @Transient
     private String passwordConfirm;
 
-//    @ManyToMany(fetch = FetchType.LAZY)
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
@@ -125,11 +124,6 @@ public class User implements UserDetails {
     public String getRoleString() {
         return roles.stream().map(role -> role.getRole().replace("ROLE_", "")).collect(Collectors.joining(" "));
     }
-
-//    public UserDetails getUserDetails() {
-//        return new org.springframework.security.core.userdetails.User(email, password, isEnabled(),
-//                isAccountNonExpired(), isCredentialsNonExpired(), isAccountNonLocked(), roles);
-//    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

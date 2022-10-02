@@ -9,226 +9,111 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
           integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
           crossorigin="anonymous">
-</head>
+
+    </head>
 
 <body>
 
 
 <!--верхняя строка-->
-    <nav class="navbar bg-dark">
-        <h5 class="text-light"><b><span sec:authentication="name"></span>
-            with roles: <span th:text="${userAuth.getRoleString()}"></span></b>
-        </h5>
+<nav class="navbar bg-dark">
+    <h5 class="text-light"><b><span sec:authentication="name"></span>
+        with roles: <span th:text="${userAuth.getRoleString()}"></span></b>
+    </h5>
 
-        <a class="text-secondary" th:href="@{/logout}">Logout</a>
-    </nav>
+    <a class="text-secondary" th:href="@{/logout}">Logout</a>
+</nav>
 <!--верхняя строка конец-->
 <div class="container-xxl">
     <div class="row">
-    <!--левая панель-->
+        <!--левая панель-->
         <div class="col-2">
             <div class="list-group" id="list-tab-left" role="tablist">
                 <a class="list-group-item list-group-item-action active" id="list-admin-list" data-toggle="list" href="#list-admin" role="tab" aria-controls="list-admin">Admin</a>
                 <a class="list-group-item list-group-item-action" id="list-user-list" data-toggle="list" href="#list-user" role="tab" aria-controls="list-user">User</a>
             </div>
         </div>
-    <!--левая панель конец-->
+        <!--левая панель конец-->
 
         <div class="col">
             <div class="tab-content" id="nav-tabLeftContent">
-    <!--средняя панель-->
+                <!--средняя панель-->
                 <div class="tab-pane fade show active" id="list-admin" role="tabpanel" aria-labelledby="list-admin-list">
                     <h1>Admin panel</h1>
                     <div class="list-group list-group-horizontal col-2" id="list-tab" role="tablist">
                         <a class="list-group-item list-group-item-light active" id="list-tableUsers-list" data-toggle="list" href="#list-tableUsers" role="tab" aria-controls="list-tableUser">Users table</a>
                         <a class="list-group-item list-group-item-light" id="list-newUser-list" data-toggle="list" href="#list-newUser" role="tab" aria-controls="list-newUser">New user</a>
                     </div>
-    <!--содержимое средней панели-->
+                    <!--содержимое средней панели-->
                     <div class="tab-content" id="nav-tabMiddleContent">
-    <!--таблица пользователей-->
+                        <!--таблица пользователей-->
                         <div class="tab-pane fade show active" id="list-tableUsers" role="tabpanel" aria-labelledby="list-tableUsers-list">
                             <div class="card-header">
                                 <h4>All users</h4>
                             </div>
-                            <div>
-                                <table class="table table-striped">
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>First Name</th>
-                                        <th>Last Name</th>
-                                        <th>Age</th>
-                                        <th>Email</th>
-                                        <th>Role</th>
-                                        <th>Edit</th>
-                                        <th>Delete</th>
-                                    </tr>
-
-                                    <tr th:each="user: ${userList}">
-                                        <th th:text="${user.getId()}"></th>
-                                        <th th:text="${user.getFirstName()}"></th>
-                                        <th th:text="${user.getLastName()}"></th>
-                                        <th th:text="${user.getAge()}"></th>
-                                        <th th:text="${user.getEmail()}"></th>
-                                        <th th:utext="${user.getRoleString()}"></th>
-                                        <td>
-                                            <a type="button" class="btn btn-primary" th:href="${'#edit' + user.id}" data-toggle="modal">Edit</a>
-                                        </td>
-                                        <td>
-                                            <a type="button" class="btn btn-danger" th:href="${'#delete' + user.id}" data-toggle="modal">Delete</a>
-                                        </td>
-
-                                        <!--модальное окно изменения пользователя-->
-                                        <div class="modal fade" th:id="${'edit'+user.id}" tabindex="-1" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabel">Edit user</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <form th:method="PATCH" th:action="@{/admin/{id}(id=${user.getId()})}">
-                                                            <div class="container-fluid">
-                                                                <div class="col row  justify-content-center">
-                                                                    <div class="align-self-center h5">
-                                                                            <label class="row  justify-content-center" for="id">ID</label>
-                                                                            <input class="form-control" type="text" th:value="*{user.id}" id="id" readonly>
-                                                                            <br>
-                                                                            <label class="row  justify-content-center" for="firstName">First Name</label>
-                                                                            <input  class="form-control" name="firstName" type="text" th:value="*{user.firstName}" id="firstName">
-                                                                            <br>
-                                                                            <label class="row  justify-content-center" for="lastName">Last Name</label>
-                                                                            <input  class="form-control" name="lastName" type="text" th:value="*{user.lastName}" id="lastName">
-                                                                            <br>
-                                                                            <label class="row  justify-content-center" for="age">Age</label>
-                                                                            <input  class="form-control" name="age" type="number" step="1" min="1"
-                                                                                    max="150" th:value="*{user.age}" id="age">
-                                                                            <br>
-                                                                            <label class="row  justify-content-center" for="email">Email</label>
-                                                                            <input  class="form-control" name="email" type="email" th:value="*{user.email}" id="email">
-                                                                            <br>
-                                                                            <label class="row  justify-content-center" for="password">Password</label>
-                                                                            <input  class="form-control" name="password" type="password" th:value="*{user.password}" id="password">
-                                                                            <br>
-                                                                            <label class="row  justify-content-center" for="role">Role</label>
-                                                                            <select class="form-control" size="2" id="role" name="role">
-                                                                                <option>ADMIN</option>
-                                                                                <option>USER</option>
-                                                                            </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                                <button type="submit" class="btn btn-primary">Edit</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!--модальное окно изменения пользователя конец-->
-                                        <!--модальное окно удаления пользователя-->
-                                        <div class="modal fade" th:id="${'delete'+user.id}" tabindex="-1" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="exampleModalLabelDelete">Delete user</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <form th:method="DELETE" th:action="@{/admin/{id}/delete(id=${user.getId()})}">
-                                                            <div class="container-fluid">
-                                                                <div class="col row  justify-content-center">
-                                                                    <div class="align-self-center h5">
-                                                                        <label class="row  justify-content-center" for="idDel">ID</label>
-                                                                        <input class="form-control" type="text" th:value="*{user.id}" id="idDel" readonly>
-                                                                        <br>
-                                                                        <label class="row  justify-content-center" for="firstNameDel">First Name</label>
-                                                                        <input  class="form-control" name="firstName" type="text" th:value="*{user.firstName}" id="firstNameDel" readonly>
-                                                                        <br>
-                                                                        <label class="row  justify-content-center" for="lastNameDel">Last Name</label>
-                                                                        <input  class="form-control" name="lastName" type="text" th:value="*{user.lastName}" id="lastNameDel" readonly>
-                                                                        <br>
-                                                                        <label class="row  justify-content-center" for="ageDel">Age</label>
-                                                                        <input  class="form-control" name="age" type="number" step="1" min="1"
-                                                                                max="150" th:value="*{user.age}" id="ageDel" readonly>
-                                                                        <br>
-                                                                        <label class="row  justify-content-center" for="emailDel">Email</label>
-                                                                        <input  class="form-control" name="email" type="email" th:value="*{user.email}" id="emailDel" readonly>
-                                                                        <br>
-                                                                        <label class="row  justify-content-center" for="roleDel">Role</label>
-                                                                        <select class="form-control" size="2" id="roleDel" name="role" readonly>
-                                                                            <option>ADMIN</option>
-                                                                            <option>USER</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                                <button type="submit" class="btn btn-danger">Delete</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!--модальное окно удаления пользователя конец-->
-                                    </tr>
-                                </table>
-                            </div>
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Age</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
+                                </tr>
+                                </thead>
+                                <tbody id="table_body">
+                                </tbody>
+                            </table>
                         </div>
-    <!--таблица пользователей конец-->
+                        <!--таблица пользователей конец-->
 
-    <!--создание пользователей-->
+                        <!--создание пользователей-->
                         <div class="tab-pane fade" id="list-newUser" role="tabpanel" aria-labelledby="list-newUser-list">
                             <div class="card-header">
                                 <h4>Add new user</h4>
                             </div>
+
                             <div class="container-fluid">
                                 <div class="col row  justify-content-center">
-                                    <div class="col-3 align-self-center h5">
-                                        <form th:method="POST" th:action="@{/admin/new-user}" th:object="${newUser}">
-                                            <div class="form-group">
-                                                <label class="row  justify-content-center" for="FirstNameNew">First Name</label>
-                                                <input  class="form-control" type="text" th:field="*{firstName}" id="FirstNameNew">
-                                                <br>
-                                                <label class="row  justify-content-center" for="LastNameNew">Last Name</label>
-                                                <input  class="form-control" type="text" th:field="*{lastName}" id="LastNameNew">
-                                                <br>
-                                                <label class="row  justify-content-center" for="AgeNew">Age</label>
-                                                <input  class="form-control" type="text" th:field="*{age}" id="AgeNew">
-                                                <br>
-                                                <label class="row  justify-content-center" for="emailNew">Email</label>
-                                                <input  class="form-control" type="text" th:field="*{email}" id="emailNew">
-                                                <br>
-                                                <label class="row  justify-content-center" for="passwordNew">Password</label>
-                                                <input  class="form-control" type="password" th:field="*{password}" id="passwordNew">
-                                                <br>
-                                                <label class="row  justify-content-center" for="roleNew">Role</label>
-                                                <select class="form-control" size="2" id="roleNew" name="role">
-                                                    <option>ADMIN</option>
-                                                    <option>USER</option>
-                                                </select>
-
-                                            </div>
-                                            <center><input type="submit" class="btn btn-success" value="Add new user"></center>
-                                        </form>
-                                    </div>
+                                <div class="col-3 align-self-center h5">
+                                    <form id="newUserForm">
+                                        <label class="row  justify-content-center" for="FirstNameNew">First Name</label>
+                                        <input  class="form-control" type="text" name="firstName" id="FirstNameNew">
+                                        <br>
+                                        <label class="row  justify-content-center" for="LastNameNew">Last Name</label>
+                                        <input  class="form-control" type="text" name="lastName" id="LastNameNew">
+                                        <br>
+                                        <label class="row  justify-content-center" for="AgeNew">Age</label>
+                                        <input  class="form-control" type="text" name="age" id="AgeNew">
+                                        <br>
+                                        <label class="row  justify-content-center" for="emailNew">Email</label>
+                                        <input  class="form-control" type="text" name="email" id="emailNew">
+                                        <br>
+                                        <label class="row  justify-content-center" for="passwordNew">Password</label>
+                                        <input  class="form-control" type="password" name="password" id="passwordNew">
+                                        <br>
+                                        <label class="row  justify-content-center" for="roleNew">Role</label>
+                                        <select class="form-control" size="2" id="roleNew" name="role">-->
+                                            <option>ADMIN</option>
+                                            <option>USER</option>
+                                        </select>
+                                        <br>
+                                        <center><input type="submit" class="btn btn-success" value="Add new user"></center>
+                                    </form>
+                                </div>
                                 </div>
                             </div>
                         </div>
-    <!--создание пользователей конец-->
+                        <!--создание пользователей конец-->
                     </div>
-    <!--содержимое средней панели конец-->
+                    <!--содержимое средней панели конец-->
                 </div>
-    <!--средняя панель конец-->
+                <!--средняя панель конец-->
 
-    <!--данные страницы пользователя-->
+                <!--данные страницы пользователя-->
                 <div class="tab-pane fade" id="list-user" role="tabpanel" aria-labelledby="list-user-list">
                     <h1>User information-page</h1>
                     <!--содержимое средней панели-->
@@ -260,20 +145,128 @@
                         </div>
                     </div>
                 </div>
-    <!--данные страницы пользователя конец-->
+                <!--данные страницы пользователя конец-->
             </div>
         </div>
     </div>
 </div>
 
+<!--модальное окно изменения пользователя-->
+<div class="modal fade" id="modalEdit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
 
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Edit user</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
 
+        <div class="modal-body">
+        <div class="container-fluid">
+        <div class="col row  justify-content-center">
+        <div class="align-self-center h5">
+            <form class="modal-form" id="formEdit">
+                <label class="row  justify-content-center" for="id">ID</label>
+                <input class="form-control" type="number" name="id" id="id" readonly>
+                <br>
+                <label class="row  justify-content-center" for="firstName">First Name</label>
+                <input  class="form-control" type="text" name="firstName" id="firstName">
+                <br>
+                <label class="row  justify-content-center" for="lastName">Last Name</label>
+                <input  class="form-control" type="text" name="lastName" id="lastName">
+                <br>
+                <label class="row  justify-content-center" for="age">Age</label>
+                <input  class="form-control" type="number" step="1" min="1"
+                        max="150" name="age" id="age">
+                <br>
+                <label class="row  justify-content-center" for="email">Email</label>
+                <input  class="form-control" type="email" name="email" id="email">
+                <br>
+                <label class="row  justify-content-center" for="password">Password</label>
+                <input  class="form-control" type="password" name="password" id="password">
+                <br>
+                <label class="row  justify-content-center" for="role">Role</label>
+                <select class="form-control" size="2" id="role" name="role" multiple aria-label="rolesId" >
+                    <option>ADMIN</option>
+                    <option>USER</option>
+                </select>
 
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Edit</button>
+                </div>
+            </form>
+        </div>
+        </div>
+        </div>
+        </div>
+    </div>
+    </div>
+</div>
+<!--модальное окно изменения пользователя конец-->
 
+<!--модальное окно удаления пользователя-->
+<div class="modal fade" id="modalDelete" tabindex="-1" aria-hidden="true" data-modal="Delete">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabelDelete">Delete user</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                <div class="col row  justify-content-center">
+                <div class="align-self-center h5">
+                    <form class="modal-form" id="formDelete">
+                        <label class="row  justify-content-center" for="idDel">ID</label>
+                        <input class="form-control" type="number" name="id" id="idDel" readonly>
+                        <br>
+                        <label class="row  justify-content-center" for="firstNameDel">First Name</label>
+                        <input  class="form-control" type="text" name="firstName" id="firstNameDel" readonly>
+                        <br>
+                        <label class="row  justify-content-center" for="lastNameDel">Last Name</label>
+                        <input  class="form-control" type="text" name="lastName" id="lastNameDel" readonly>
+                        <br>
+                        <label class="row  justify-content-center" for="ageDel">Age</label>
+                        <input  class="form-control" type="number" step="1" min="1"
+                                max="150" name="age" id="ageDel" readonly>
+                        <br>
+                        <label class="row  justify-content-center" for="emailDel">Email</label>
+                        <input  class="form-control" type="email" name="email" id="emailDel" readonly>
+                        <br>
+                        <label class="row  justify-content-center" for="roleDel">Role</label>
+                        <select class="form-control" size="2" id="roleDel" name="role" readonly>
+                            <option>ADMIN</option>
+                            <option>USER</option>
+                        </select>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </div>
+                    </form>
+                </div>
+                </div>
+                </div>
 
-<script type="text/javascript" src="./alert.js"></script>
+            </div>
+        </div>
+    </div>
+</div>
+<!--модальное окно удаления пользователя конец-->
+
+<script type="text/javascript" src="./EditUser.js"></script>
+<script type="text/javascript" src="./DeleteUser.js"></script>
+
+<script type="text/javascript" src="./GetUsers.js"></script>
+<script type="text/javascript" src="./NewUser.js"></script>
+
+<script type="text/javascript" src="./ModalFunctions.js"></script>
+
 <!-- Вариант 2: Отдельные JS для Popper и Bootstrap -->
-
 <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js" integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2" crossorigin="anonymous"></script>

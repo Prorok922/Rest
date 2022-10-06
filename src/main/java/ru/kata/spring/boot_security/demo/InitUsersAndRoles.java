@@ -13,11 +13,11 @@ import java.util.Set;
 
 @Component
 public class InitUsersAndRoles {
-
-    @Autowired
     UserService userService;
 
-
+    public InitUsersAndRoles(UserService userService) {
+        this.userService = userService;
+    }
 
     @EventListener(ApplicationReadyEvent.class)
     public void runAfterStartup() {

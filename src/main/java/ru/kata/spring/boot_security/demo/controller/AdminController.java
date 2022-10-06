@@ -20,7 +20,7 @@ import java.security.Principal;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-    private UserService userService;
+    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired

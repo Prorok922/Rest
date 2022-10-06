@@ -18,7 +18,7 @@ import java.util.Set;
 @Service
 public class UserServiceImp implements UserService {
     private final UserRepository userRepository;
-    private RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Lazy

@@ -3,6 +3,7 @@ package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.exception.IdNotFoundException;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
@@ -39,13 +40,14 @@ public class UserRestController {
 
 
     @PutMapping("/{id}")
-    public User update(@ModelAttribute("user") User user, @ModelAttribute("role") String role) {
+    public User update(@ModelAttribute("user") User user, @ModelAttribute("role") String role)
+            throws IdNotFoundException{
         userService.updateUser(user, role);
         return user;
     }
 
     @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable long id) {
+    public String deleteUser(@PathVariable long id) throws IdNotFoundException {
         userService.removeUser(id);
         return "Ok";
     }

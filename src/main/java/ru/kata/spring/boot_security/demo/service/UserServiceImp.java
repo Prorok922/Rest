@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import ru.kata.spring.boot_security.demo.dao.RoleRepository;
 import ru.kata.spring.boot_security.demo.dao.UserRepository;
+import ru.kata.spring.boot_security.demo.exception.IdNotFoundException;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 
@@ -37,8 +38,8 @@ public class UserServiceImp implements UserService {
     public List<Role> getAllRoles() { return roleRepository.findAll(); }
 
     @Override
-    public User getUserById(long id) {
-        return userRepository.findById(id);
+    public User getUserById(long id) throws IdNotFoundException {
+        return userRepository.findById(id).orElseThrow(() -> new IdNotFoundException("No such user with ID " + id));
     }
 
     @Override
